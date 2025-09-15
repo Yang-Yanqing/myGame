@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spaceship Battle (DC Edition)</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<main>
+
+  <!-- ========== START SCREEN ========== -->
+  <section id="startScreen" aria-label="Start Screen">
+ 
+    <div class="container">
+      <h1 id="gameTitle">Raiden: DC Blitz</h1>
+      <div class="right">
+        <button id="languageBtn" class="iconBtn">
+          <span class="icon icon-globe" aria-hidden="true"></span>
+          <span>Language</span>
+        </button>
+        <button id="topupBtn" class="iconBtn">
+          <span class="icon icon-coin" aria-hidden="true"></span>
+          <span>Top Up</span>
+        </button>
+        <button id="adminBtn" class="ghostBtn">Admin Mode</button>
+      </div>
+    </div>
+
+    <div class="startArea">
+      <button id="startBtn" class="btnPrimary btnXL">Start</button>
+      <label class="diffLabel">
+        <span class="labelTitle">Difficulty</span>
+        <select id="diffSelect">
+          <option value="easy">Easy</option>
+          <option value="normal">Normal</option>
+          <option value="hard">Hard</option>
+        </select>
+      </label>
+    </div>
+
+    <footer id="siteFooter">
+      <div class="footerCard">
+        <img src="assets/My-logo.png" alt="YANQING Studio Logo"/>
+        <span>Proudly produced by YANQING Studio</span>
+      </div>
+    </footer>
+  </section>
+
+  <!-- ========== GAME SCREEN ========== -->
+  <section id="gameScreen" aria-label="Game Screen">
+    <div class="gameLayout">
+     <!-- ==Left panel== -->
+      <aside class="panelLeft">
+        <div class="score">
+          <h2>Score</h2>
+          <div class="scoreValue" id="score">000000</div>
+        </div>
+
+        <div class="hp">
+          <div class="hpLabel">Health</div>
+          <div class="hpBar">
+            <div class="hpFill" style="width:75%"></div>
+          </div>
+          <div class="hpText">HP: <strong id="hpNum">9999</strong></div>
+        </div>
+
+        <!-- Matrix 9*9 -->
+        <div class="matrix">
+          <h3>Matrix 9×9</h3>
+          <div class="grid-9x9">
+           
+            <div class="cell"></div><div class="cell"></div><div class="cell">
+            </div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell">
+            </div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+          </div>
+        </div>
+
+    
+        <div class="inventory">
+          <h3>Inventory</h3>
+          <div class="slots">
+            <div class="slot"></div>
+            <div class="slot"></div>
+            <div class="slotUltimate">
+              <div class="ultIcon"></div>
+              <div class="ultCount">× <span>3</span></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+      
+      <!-- ==Center of Screen== -->
+      <div class="gameArea">
+        <div class="gamePlaceholder">GAME AREA</div>
+        <div class="playerShip" id="mainShip"></div>
+      </div>
+
+      <!-- ==Right panel==  -->
+      <aside class="panel right">
+        <h3>Legend</h3>
+        <ul class="legend-list">
+          <li><span class="spritePlayer"></span><span>Player</span></li>
+          <li><span class="spriteEnemy"></span><span>Enemy</span></li>
+          <li><span class="spriteBoss"></span><span>Boss</span></li>
+        </ul>
+      </aside>
+
+    </div>
+  </section>
+
+  <!-- ========== GAME OVER SCREEN========== -->
+  <section id="gameOverScreen" aria-label="Game Over Screen">
+    <div class="overWrap">
+      <h1 class="overTitle">GAME OVER</h1>
+      <button id="restartBtn" class="btnPrimary">Restart</button>
+    </div>
+  </section>
+
+</main>
+
+<script src="CoordSys.js"></script>
+<script src="TimeAxis.js"></script>
+<script src="Start.js"></script>
+<script src="PanelPlayer.js"></script>
+
+
+</body>
+</html>

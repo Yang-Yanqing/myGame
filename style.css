@@ -1,0 +1,200 @@
+*{ box-sizing: border-box }
+
+/* 显示控制：初始只显示 Start */
+#startScreen{ display:block }
+#gameScreen{ display:none }
+#gameOverScreen{ display:none }
+.show{ display:block !important }
+.grid-show{ display:grid !important }
+
+/* 背景：偏灰 & 弱化 */
+body{
+  margin:0; font-family:sans-serif;
+  height:100vh; width:100vw;
+  background:#121620 url("assets/DCicon.webp") repeat;
+  background-size:120px 120px;
+  animation:dcflow 30s linear infinite;
+  position:relative;
+}
+body::after{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  background: rgba(18,22,32,.60); /* 适当加深可到 .70 */
+  z-index:0;
+}
+@keyframes dcflow{ 0%{background-position:0 0} 100%{background-position:-1000px -1000px} }
+
+/* ========== START SCREEN ========== */
+#startScreen{
+  position:relative;
+  min-height:100vh;
+  padding-top:72px; /* 顶栏高度 */
+  z-index:1;
+}
+/* 顶栏 */
+#startScreen .container{
+  position:fixed; top:0; left:0; right:0;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; padding:10px 16px;
+  background:rgba(5,10,20,.55);
+  backdrop-filter:blur(4px);
+  z-index:1000;
+}
+#gameTitle{
+  margin:0;
+  font-weight:900;
+  font-size:clamp(20px,3.2vw,34px);
+  letter-spacing:.4px;
+  color:#EAF2FF;
+  text-shadow:0 2px 6px rgba(0,0,0,.35),
+              0 0 10px rgba(91,213,255,.2),
+              0 0 16px rgba(42,211,131,.14);
+}
+#startScreen .right{ display:flex; align-items:center; gap:10px }
+/* 图标按钮 */
+.iconBtn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 12px; border-radius:10px;
+  border:1px solid rgba(120,150,190,.25);
+  background:rgba(20,28,40,.55); color:#EAF2FF; font-weight:700; cursor:pointer;
+}
+.iconBtn:hover{ filter:brightness(1.08) }
+.ghostBtn{
+  padding:8px 12px; border-radius:10px; cursor:pointer;
+  border:1px solid rgba(120,150,190,.25); background:transparent; color:#cfe3ff;
+}
+.icon{ width:18px; height:18px; display:inline-block; background-size:contain; background-repeat:no-repeat }
+
+/* centre */
+.startArea{
+  min-height: calc(100vh - 72px - 64px); /* 72 顶栏 + 64 页脚 */
+  display:grid; place-items:center; gap:18px;
+}
+.btnPrimary{ padding:10px 16px; font-size:16px; font-weight:800; border:none; border-radius:8px; cursor:pointer; background:#2a7; color:#021 }
+.btnPrimary:hover{ filter:brightness(1.08) }
+.btnXL{ padding:16px 28px; font-size:22px; border-radius:12px }
+
+/* diffculty */
+.diffLabel{
+  display:flex; align-items:center; gap:10px;
+  background:rgba(20,28,40,.55);
+  border:1px solid rgba(120,150,190,.25);
+  padding:8px 12px; border-radius:10px;
+}
+.diffLabel .labelTitle{ font-weight:800; letter-spacing:.3px; color:#a7d0ff; text-transform:uppercase }
+#diffSelect{ padding:6px 8px; border-radius:8px; border:1px solid #335; background:#0f1b2e; color:#eaf2ff }
+/*foot*/
+#siteFooter{ position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:9 }
+.footerCard{
+  display:flex; align-items:center; gap:10px;
+  background:rgba(255,255,255,.82); color:#0c1424;
+  padding:6px 12px; border-radius:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,.22);
+}
+.footerCard img{ height:28px; width:auto; display:block }
+.footerCard span{ font-weight:800; white-space:nowrap }
+
+/* ========== GAME SCREEN ========== */
+#gameScreen{
+  height:100vh; width:100vw;
+  position:relative; z-index:1;
+}
+.gameLayout{
+  display:grid;
+  grid-template-columns:minmax(260px,320px) 1fr minmax(220px,260px);
+  gap:16px; padding:16px; height:100%; box-sizing:border-box;
+}
+.panelLeft, .panel.right{
+  background:rgba(0,0,0,.6);
+  border:1px solid #334; border-radius:10px;
+  padding:14px; color:#eaf2ff;
+}
+/* Score */
+.score h2{ margin:0 0 6px; font-size:18px }
+.scoreValue{ font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-weight:700; font-size:22px; line-height:1.2; letter-spacing:1px }
+/* HP */
+.hp{ margin-top:14px }
+.hpLabel{ font-weight:700; margin-bottom:6px }
+.hpBar{ height:14px; border:1px solid #355; border-radius:8px; background:#0f1b2e; overflow:hidden }
+.hpFill{ height:100%; background:linear-gradient(90deg,#2ad383,#5bd5ff) }
+.hpText{ margin-top:6px }
+/* Matrix */
+.matrix{ margin-top:16px }
+.matrix h3{ margin:0 0 8px; font-size:16px }
+.grid-9x9{ display:grid; grid-template-columns:repeat(9,22px); grid-auto-rows:22px; gap:6px; counter-reset:num }
+.grid-9x9 .cell{
+  counter-increment:num; display:grid; place-items:center;
+  background:#111a2a; border:1px solid #2a375f; border-radius:6px; color:#cfe8ff;
+  font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-weight:600; font-size:11px; line-height:1;
+}
+.grid-9x9 .cell::after{ content:counter(num) }
+/* Inventory */
+.inventory{ margin-top:16px }
+.inventory h3{ margin:0 0 8px; font-size:16px }
+.slots{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px }
+.slot, .slotUltimate{ height:48px; background:#111a2a; border:1px solid #2a375f; border-radius:8px }
+.slotUltimate{ display:grid; grid-template-columns:auto 1fr; align-items:center; gap:6px; padding:6px }
+.ultIcon{ width:36px; height:36px; background:#0f1b2e url("assets/powerup.png") center/contain no-repeat; border-radius:6px; border:1px solid #2a375f }
+.ultCount{ font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-weight:700; font-size:16px; color:#eaf2ff }
+/* Game Area */
+.gameArea{ position:relative; border:2px solid #334; border-radius:12px; background:#000; overflow:hidden }
+
+.gamePlaceholder{
+  position:absolute; inset:0; display:grid; place-items:center;
+  color:#3ad; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-weight:700; font-size:20px; line-height:1.2; opacity:.35;pointer-events: none;z-index: 1;
+  /* 将来作为武器展示区*/
+}
+
+#mainShip{
+  position:absolute;
+  width: 60px;
+  height: 60px;
+  background-image: url('assets/player_ship.png');
+  image-rendering: pixelated;
+  background-repeat: no-repeat;
+  background-position: center;
+  
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%,0);
+  
+}
+
+
+/* Legend */
+.panel.right h3{ margin:0 0 8px; font-size:16px }
+.legend-list{ list-style:none; margin:0; padding:0; display:grid; gap:12px }
+.legend-list li{ display:flex; align-items:center; gap:12px }
+.spritePlayer, .spriteEnemy, .spriteBoss{
+  width:32px; height:32px; border-radius:6px; background:#0f1b2e; border:1px solid #2a375f;
+  image-rendering:pixelated; background-size:contain; background-repeat:no-repeat; background-position:center;
+}
+.spritePlayer{ background-image:url("assets/player_ship.png") }
+.spriteEnemy { background-image:url("assets/enemy_small.png") }
+.spriteBoss  { background-image:url("assets/boss.png") }
+/* Mobile */
+@media (max-width:980px){
+  .gameLayout{ grid-template-columns:1fr }
+  .panel.right{ order:3 }
+  .gameArea{ order:2; height:60vh }
+  .panelLeft{ order:1 }
+}
+
+/* ========== GAME OVER ========== */
+#gameOverScreen{
+  position: fixed;      
+  inset:0;             
+  z-index: 2000;
+  display: none;        
+  place-items: center; 
+  background: rgba(0,0,0,.35); 
+}
+
+.overWrap{
+  text-align: center;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #334;
+  border-radius: 12px;
+  padding: 24px 28px;
+}
