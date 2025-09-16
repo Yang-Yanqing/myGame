@@ -29,10 +29,18 @@ class TimeAxis{
             this.nowReal+=deltaRealtime;
             this.nowGame+=deltaGametime;
             this.rAF=requestAnimationFrame(this.gameLoop);
+            bulletOfEnemy.updateAll(deltaGametime);
+            updateEnemyShooting(this.nowGame);      
 
-            console.log("nowGame=",this.nowGame);
+            // console.log("nowGame=",this.nowGame);
+
+           
+          if (DEBUG_FPS_LOG && (Math.floor(this.nowReal) !== Math.floor(this.nowReal - deltaRealtime))) {
+             console.log('nowGame=', this.nowGame.toFixed(2));  }
 
             bulletOfPlayer.updateAll(deltaGametime);
+            enemySpawner.update(deltaGametime, this.nowGame);
+            resolveBulletEnemyHits();
         }
     }
         
@@ -43,8 +51,7 @@ class TimeAxis{
             this.checkRunning=true;
             this.lastTs=0;
             this.rAF=requestAnimationFrame(this.gameLoop);
-            console.log(this.lastTs);
-        }
+             }
         
         pause()
         {

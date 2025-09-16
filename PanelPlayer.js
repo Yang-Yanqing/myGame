@@ -1,7 +1,8 @@
-const gameArea=document.querySelector('.gameArea');
-const coordSys=new CoordSys(gameArea);
-const gameStartPlay=new Start();
-const gameClock=new TimeAxis(1);
+const gameArea=document.getElementById('gameArea');
+// const coordSys=new CoordSys(gameArea);
+// const gameArea=document.getElementById('gameArea');
+
+// const gameClock=new TimeAxis(1);
 gameClock.start();
 
 
@@ -14,7 +15,12 @@ class PanelPlayer{
         this.gameArea=this.coordSys.area;
         this.xP=0;
         this.yP=20;
-        this.speed=5           
+        this.speed=5 
+
+        this.id='player1'
+        this.team = 'player';
+        this.alive = true;
+        this.Hp=100;        
     }
 
     bounds(){
@@ -23,7 +29,7 @@ class PanelPlayer{
         const w=this.element.clientWidth;
         const h=this.element.clientHeight;
         const minX= -W/2+w/2;
-        const maxX= W/2 - w/2;
+        const maxX= W/2-w/2;
         const minY=0;
         const maxY=H-h;
 
@@ -66,6 +72,7 @@ class PanelPlayer{
     }
 
 const playerShip=new PanelPlayer(coordSys);
+
 document.addEventListener('keydown',(event)=>{
     if(event.key==='ArrowLeft'){playerShip.moveLeft()};
     if(event.key==='ArrowRight'){playerShip.moveRight()};
@@ -77,76 +84,79 @@ document.addEventListener('keydown',(event)=>{
 
 
 
-class AllBullet{
+class playerBullet{
     constructor(coordSys){
         this.coordSys=coordSys;
         this.bulletContainer=coordSys.area;
-       
-        this.BulletYellow=this.creatBullet();
-        this.BulletRed=this.creatBullet();
-        this.BulletGreen=this.creatBullet();
         this.bullets=[];
-
-        this.changeBackground()
-    
-    }
-        creatBullet(){
+        }
+        createBulletElement(){
             const bullet=document.createElement("div");
-            bullet.className = 'bullet';  
-            bullet.style.position = 'absolute';
-            bullet.style.width = '2px';
-            bullet.style.height = '5px';
-            bullet.style.borderRadius = '3px';
-            bullet.style.backgroundRepeat = 'no-repeat';
-            bullet.style.backgroundSize = 'contain';
+             Object.assign(bullet.style, {
+                    position: 'absolute',
+                    width: '2px',
+                    height: '6px',
+                    borderRadius: '3px',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'contain',
+                    backgroundImage: "url('assets/player_bullet.png')",
+                    zIndex: '3',
+                  });
+
             this.bulletContainer.appendChild(bullet);
             return bullet;
         }
 
-        changeBackground(){
-              this.BulletYellow.style.backgroundImage = "url('assets/player_bullet.png')";
-              this.BulletRed.style.backgroundImage    = "url('assets/enemy_bullet.png')";
-              this.BulletGreen.style.backgroundImage  = "url('assets/player_bullet.png')";
-         }
-
+        
 
         biuBiu(player,vy=600){
             const startX=player.xP;
             const startY=player.yP+player.element.clientHeight;
 
-            const element=this.creatBullet();
+            const element=this.createBulletElement();
             element.style.backgroundImage="url('assets/player_bullet.png')"
-            const bullet={
-                 x: startX,
-                 y: startY,
-                 vy: vy,
-                 element: element
-            };
+            const b={
+                  id: `pb-${BULLET_ID++}`,
+                  team: 'player',
+                  ownerId: player.id,
+                  damage: 1,
+                  active: true,
+                  x: startX,
+                  y: startY,
+                  vx: 0,
+                  vy: vy,
+                  element,
+                      };
 
-            this.bullets.push(bullet);
-
+            this.bullets.push(b);
         }
 
-        updateAll(deltaGametime){
+        updateAll(dt){
             for(let i=this.bullets.length-1;i>=0;i--)
                 {
                     const b=this.bullets[i];
-                    b.y+=b.vy*deltaGametime;
+                    if(!b.active)continue;
+                    b.y+=b.vy*dt;
+                    b.x+=b.vx*dt;
                     this.coordSys.toStage(b.x,b.y,b.element,'center-bottom');
-                    if(b.y>this.bulletContainer.clientHeight+50){b.element.remove();this.bullets.splice(i,1);}
-
-                }
-            
-      
-
-        }
+                    if(b.y>this.bulletContainer.clientHeight+50)
+                        {
+                            b.active=false;
+                            b.element.remove();
+                            this.bullets.splice(i,1);
+                        }
+                }         
+         }
     }
 
 
-    const bulletOfPlayer=new AllBullet(coordSys);
+const bulletOfPlayer=new playerBullet(coordSys);
     
     document.addEventListener('keydown',(event)=>{
-    if(event.code==='Space'){bulletOfPlayer.biuBiu(playerShip)};
+    if(event.code==='Space')
+        {
+            bulletOfPlayer.biuBiu(playerShip)
+        };
     
 })
 
