@@ -99,7 +99,10 @@ body::after{
 #gameScreen{
   height:100vh; width:100vw;
   position:relative; z-index:1;
+ 
 }
+
+
 .gameLayout{
   display:grid;
   grid-template-columns:minmax(260px,320px) 1fr minmax(220px,260px);
@@ -138,7 +141,10 @@ body::after{
 .ultIcon{ width:36px; height:36px; background:#0f1b2e url("assets/powerup.png") center/contain no-repeat; border-radius:6px; border:1px solid #2a375f }
 .ultCount{ font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-weight:700; font-size:16px; color:#eaf2ff }
 /* Game Area */
-#gameArea{ position:relative; border:2px solid #334; border-radius:12px; background:#000; overflow:hidden; width: 600px; height: 800px;  }
+#gameArea{ position:relative; border:2px solid #334; border-radius:12px; background:#000; overflow:hidden; width: 600px; height: 800px; background: url('assets/bg_far.png') repeat;
+  animation:starSky 30s linear infinite; }
+
+  @keyframes starSky{ 0%{background-position:0 0} 100%{background-position:-1000px -1000px} }
 
 .gamePlaceholder{
   position:absolute; inset:0; display:grid; place-items:center;
@@ -148,8 +154,8 @@ body::after{
 
 #mainShip{
   position:absolute;
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
   background-image: url('assets/player_ship.png');
   image-rendering: pixelated;
   background-repeat: no-repeat;
@@ -158,9 +164,51 @@ body::after{
   left: 50%;
   bottom: 20px;
   transform: translateX(-50%,0);
-  
+  position: relative;
 }
 
+.shipSprite{
+  width:100%; height:100%;
+  background: url('assets/player_ship.png') center/contain no-repeat;
+  image-rendering:pixelated;
+}
+
+
+.weapon {
+  position:absolute;
+  width:120px;                 
+  height:36px;
+  background:url('assets/red_weapon.png') center/contain no-repeat;
+  image-rendering:pixelated;
+  pointer-events:none;
+  left:50%;                    
+  bottom:42px;                 
+  transform:translateX(-50%);  
+}
+
+.boss { position: absolute; }
+
+.bossHp {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;            
+  transform: translateX(-50%) translateY(-6px); 
+  width: 88px;             
+  height: 9px;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 2;              
+}
+
+
+.bossHpFill {
+  height: 100%;
+  width: 100%;            
+  background: linear-gradient(90deg,#ff4d4f,#ff9f43);
+  transition: width .12s ease;
+}
 
 /* Legend */
 .panel.right h3{ margin:0 0 8px; font-size:16px }
@@ -182,19 +230,72 @@ body::after{
 }
 
 /* ========== GAME OVER ========== */
-#gameOverScreen{
-  position: fixed;      
-  inset:0;             
-  z-index: 2000;
-  display: none;        
-  place-items: center; 
-  background: rgba(0,0,0,.35); 
+
+:root{
+  --card: rgba(25,25,28,.85);
+  --stroke: rgba(255,255,255,.12);
+  --text: #fff;
+  --muted: rgba(255,255,255,.75);
+  --accent: #2ecc71; /* green */
 }
 
-.overWrap{
+/* ---- FULLSCREEN OVERLAY ---- */
+#gameOverScreen{
+  position: fixed;
+  inset: 0;
+  display: none;                 /* keep default hidden */
+  place-items: center;           /* center the card */
+  background: rgba(0,0,0,.6);    /* dim background */
+  z-index: 10000;                /* above everything */
+}
+
+/* use this class to show it as a grid (your naming) */
+#gameOverScreen.grid-show{ display: grid !important; }
+
+/* ---- CARD ---- */
+.goCard{
+  width: min(92vw, 460px);
+  padding: 22px;
   text-align: center;
-  background: rgba(0, 0, 0, 0.7);
-  border: 2px solid #334;
-  border-radius: 12px;
-  padding: 24px 28px;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.4);
+  animation: fadePop .18s ease-out both;
+}
+
+#goTitle{ margin: 0 0 .3em; font-size: clamp(26px,4vw,36px); letter-spacing:.06em; }
+.goSub{ margin: 0 0 1rem; color: var(--muted); }
+#goScore{ color: var(--text); font-weight: 800; }
+
+.goActions{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: .5rem; }
+
+.btn{
+  border: 1px solid var(--stroke);
+  background: transparent;
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .1s ease, background .1s ease;
+}
+.btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); }
+.btn:active{ transform: translateY(0); }
+.btn:focus-visible{ outline: 2px solid #fff; outline-offset: 2px; }
+
+.btnRestart{
+  background: var(--accent);
+  color: #062b16;
+  border-color: transparent;
+  box-shadow: 0 6px 14px rgba(46,204,113,.35);
+}
+.btnRestart:hover{ background: #27c46a; }
+
+.goTip{ margin: .25rem 0 0; font-size: 12px; color: var(--muted); }
+
+@keyframes fadePop{
+  from{ opacity: 0; transform: translateY(6px) scale(.98); }
+  to{ opacity: 1; transform: translateY(0) scale(1); }
 }

@@ -29,18 +29,22 @@ class TimeAxis{
             this.nowReal+=deltaRealtime;
             this.nowGame+=deltaGametime;
             this.rAF=requestAnimationFrame(this.gameLoop);
-            bulletOfEnemy.updateAll(deltaGametime);
-            updateEnemyShooting(this.nowGame);      
 
-            // console.log("nowGame=",this.nowGame);
-
-           
-          if (DEBUG_FPS_LOG && (Math.floor(this.nowReal) !== Math.floor(this.nowReal - deltaRealtime))) {
+            if (DEBUG_FPS_LOG && (Math.floor(this.nowReal) !== Math.floor(this.nowReal - deltaRealtime))) {
              console.log('nowGame=', this.nowGame.toFixed(2));  }
+            
+            bulletOfEnemy.updateAll(deltaGametime);//小怪子弹
+            resolveBulletPlayerHits();//玩家受击
+            
+            updateEnemyShooting(this.nowGame,3); //怪攻击
+            updateBossSpawner(this.nowGame);//刷Boss
+            for (const boss of bosses) {boss.updateBoss(deltaGametime, this.nowGame);} //刷Boss
 
-            bulletOfPlayer.updateAll(deltaGametime);
+            bulletOfPlayer.updateAll(deltaGametime);//玩家子弹
+            resolveBulletBossHits();//Boss受击
+            
             enemySpawner.update(deltaGametime, this.nowGame);
-            resolveBulletEnemyHits();
+            resolveBulletEnemyHits();//小怪受击      
         }
     }
         

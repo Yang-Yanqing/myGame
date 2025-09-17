@@ -1,8 +1,9 @@
 let ENEMY_ID = 1;
 let BULLET_ID = 1;
+
+
 const DEBUG_FPS_LOG = false;
-const coordSys=new CoordSys(gameArea);
-const gameClock=new TimeAxis(1);
+
 
 class Start{
     constructor(){
@@ -12,21 +13,40 @@ class Start{
         this.adminBtn=document.getElementById('adminBtn');
         this.startScreen=document.getElementById('startScreen');
         this.gameScreen=document.getElementById('gameScreen');
+        
+        this.difficulty=document.getElementById('diffSelect')
+
+       
 
         this.startBtn.addEventListener('click',()=>{
+            gameClock.restart();
+            enemySpawner.initialized=false;
+            enemySpawner.lastWaveAt=0;
+            lastBossAt=0;
+
+            const difficulty=this.difficulty.value;
+            console.log('Diffculty level:',difficulty);
+
+            if(difficulty==='easy'){gameClock=new TimeAxis(0.3);}
+            else if(difficulty==='normal'){gameClock=new TimeAxis(1);}
+            else if(difficulty==='hard'){gameClock=new TimeAxis(2);}
+
             this.startScreen.style.display='none';
             this.gameScreen.style.display='block';
             setTimeout(()=>playerShip.render(),50);
+
+            playerShip.alive=true;
+            playerShip.hp = 100;
+            refreshHp();
         })
 
     }
 
 }
 
-const gameStart=new Start;
+const gameStart=new Start();
 
 //碰撞检测
-
 function isColliding(element1,element2,includeTouch=true)
 {
 const r1=element1.getBoundingClientRect();
@@ -53,7 +73,7 @@ function checkHits(ships, bullets, allowFriendlyFire = false, includeTouch = tru
   ships.forEach(ship => {
     if (ship.alive === false) return;
     bullets.forEach(bullet => {
-      if (bullet.active === false) return;
+      if (bullet.alive === false) return;
       if (bullet.ownerId === ship.id) return;                         // 排除自伤
       if (!allowFriendlyFire && bullet.team === ship.team) return;    // 排除友伤
       if (isColliding(ship.element, bullet.element, includeTouch)) {
@@ -65,14 +85,64 @@ function checkHits(ships, bullets, allowFriendlyFire = false, includeTouch = tru
 }
 
 
+function resolveBulletPlayerHits() {
+  const hits = checkHits([playerShip], bulletOfEnemy.bullets, /* allowFriendlyFire */ false, /* includeTouch */ true);
+
+  if (hits.length === 0) return;
+
+  // 把命中的 id 收集起来，避免在循环中反复 splice 干扰
+  let totalDamage=0
+  const deadBulletIds=new Set();
+
+  for (const {bulletId} of hits) {
+    const b=bulletOfEnemy.bullets.find(x=>x.id===bulletId&&x.alive);
+    if(!b)continue;
+    totalDamage+=(b.damage??1);
+    deadBulletIds.add(b.id);
+  }
+
+  // 敌人：标记 + 删 DOM + 过滤数组
+  for (const b of bulletOfEnemy.bullets) {
+    if (deadBulletIds.has(b.id) && b.alive) {
+      b.alive = false;
+      b.element.remove();
+    }
+  }
+  for (let i = bulletOfEnemy.bullets.length - 1; i >= 0; i--) {
+    if (!bulletOfEnemy.bullets[i].alive) bulletOfEnemy.bullets.splice(i, 1);
+  }
+
+  // 子弹：标记 inalive，具体清理交给 updateAll 
+  for (const b of bulletOfPlayer.bullets) {
+    if (deadBulletIds.has(b.id) && b.alive) {
+      b.alive = false;
+      b.element.remove();
+    }
+  }
+
+  //扣血
+  playerShip.hp=Math.max(0,playerShip.hp-totalDamage);
+  refreshHp();
+
+
+  //玩家判定死亡
+  if(playerShip.hp<=0&&playerShip.alive!==false){
+    playerShip.alive=false;
+    endGame()
+  }
+
+
+  
+}
+
 function resolveBulletEnemyHits() {
   const hits = checkHits(enemys, bulletOfPlayer.bullets, /* allowFriendlyFire */ false, /* includeTouch */ true);
 
   if (hits.length === 0) return;
 
   // 把命中的 id 收集起来，避免在循环中反复 splice 干扰
-  const deadEnemyIds = new Set();
-  const deadBulletIds = new Set();
+  const deadEnemyIds=new Set();
+  const deadBulletIds=new Set();
 
   for (const { shipId, bulletId } of hits) {
     deadBulletIds.add(bulletId);
@@ -93,14 +163,72 @@ function resolveBulletEnemyHits() {
     if (!enemys[i].alive) enemys.splice(i, 1);
   }
 
-  // 子弹：标记 inactive，具体清理交给 updateAll 
+  // 子弹：标记 inalive，具体清理交给 updateAll 
   for (const b of bulletOfPlayer.bullets) {
-    if (deadBulletIds.has(b.id) && b.active) {
-      b.active = false;
+    if (deadBulletIds.has(b.id) && b.alive) {
+      b.alive = false;
       b.element.remove();
     }
   }
   for (let i = bulletOfPlayer.bullets.length - 1; i >= 0; i--) {
-    if (!bulletOfPlayer.bullets[i].active) bulletOfPlayer.bullets.splice(i, 1);
+    if (!bulletOfPlayer.bullets[i].alive) bulletOfPlayer.bullets.splice(i, 1);
   }
 }
+
+
+function resolveBulletBossHits() {
+  const hits = checkHits(bosses, bulletOfPlayer.bullets, /* allowFriendlyFire */ false, /* includeTouch */ true);
+
+  if (hits.length === 0) return;
+
+  // 把命中的 id 收集起来，避免在循环中反复 splice 干扰
+  const damageByBoss=new Map()
+  const deadBulletIds=new Set();
+
+  for (const {shipId,bulletId} of hits) {
+    const b=bulletOfPlayer.bullets.find(x=>x.id===bulletId&&x.alive);
+    if(!b)continue;
+    const dmg = (b.damage??1);
+    damageByBoss.set(shipId,(damageByBoss.get(shipId)??0)+dmg);
+    deadBulletIds.add(b.id);
+  }
+
+  for (let i = bulletOfPlayer.bullets.length - 1; i >= 0; i--) {
+    const b = bulletOfPlayer.bullets[i];
+    if(deadBulletIds.has(b.id) && b.alive) {
+      b.alive = false;
+      b.element.remove();
+      bulletOfPlayer.bullets.splice(i,1);
+    }
+  }
+
+  //按照BossID扣血，因为不止一个Boss
+  for(const[bossId,dmgSum] of damageByBoss.entries())
+    {
+      const boss=bosses.find(x=>x.id===bossId&&x.alive)//I found you
+      if(!boss) continue;
+      // boss.hp=Math.max(0,boss.hp-dmgSum);
+      // if(boss.hp===0&&boss.alive===true)boss.destroy();    
+      boss.takeDamage(dmgSum);
+  }
+}
+
+
+
+
+
+class GameOver{
+    constructor()
+    {
+      this.restartBtn=document.getElementById('goRestart');
+      this.gameOverScreen=document.getElementById('gameOverScreen');
+      this.startScreen=document.getElementById('startScreen');
+     
+      this.restartBtn.addEventListener('click',()=>{
+        if(this.gameOverScreen)this.gameOverScreen.style.display='none';
+        if(this.startScreen)this.startScreen.style.display='block';
+      })
+    }
+  }
+
+  const gameOver=new GameOver();

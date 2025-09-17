@@ -62,7 +62,7 @@
           <div class="hpBar">
             <div class="hpFill" style="width:75%"></div>
           </div>
-          <div class="hpText">HP: <strong id="hpNum">9999</strong></div>
+          <div class="hpText">HP: <strong id="hpNum">100</strong></div>
         </div>
 
         <!-- Matrix 9*9 -->
@@ -107,7 +107,10 @@
       <!-- ==Center of Screen== -->
       <div class="gameArea" id="gameArea">
         <div class="gamePlaceholder">GAME AREA</div>
-        <div class="playerShip" id="mainShip"></div>
+        <div class="playerShip" id="mainShip">
+          <div class="weapon" id="weapon"></div>
+          
+        </div>
       </div>
 
       <!-- ==Right panel==  -->
@@ -124,17 +127,23 @@
   </section>
 
   <!-- ========== GAME OVER SCREEN========== -->
-  <section id="gameOverScreen" aria-label="Game Over Screen">
-    <div class="overWrap">
-      <h1 class="overTitle">GAME OVER</h1>
-      <button id="restartBtn" class="btnPrimary">Restart</button>
+  <section id="gameOverScreen"  aria-labelledby="goTitle" >
+  <div class="goCard" >
+    <h1 id="goTitle">GAME OVER</h1>
+    <p class="goSub">Score: <span id="goScore">0</span></p>
+    <div class="goActions">
+      <button id="goRestart" class="btnRestart">Restart</button>
+      <button id="goMenu" class="btn">Main Menu</button>
     </div>
-  </section>
+    <p class="goTip">Tip: press <kbd>R</kbd> to restart, <kbd>Esc</kbd> for menu</p>
+  </div>
+</section>
 
 </main>
 
 <script src="CoordSys.js"></script>
 <script src="TimeAxis.js"></script>
+<script src="bootstrap.js"></script>
 <script src="Main.js"></script>
 <script src="PanelPlayer.js"></script>
 <script src="Enemy.js"></script>

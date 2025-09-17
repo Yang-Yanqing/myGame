@@ -1,26 +1,24 @@
-const gameArea=document.getElementById('gameArea');
+
 // const coordSys=new CoordSys(gameArea);
 // const gameArea=document.getElementById('gameArea');
-
 // const gameClock=new TimeAxis(1);
 gameClock.start();
-
-
 class PanelPlayer{
     constructor(coordSys){
         this.coordSys=coordSys;
         this.element=document.getElementById('mainShip')
-        this.Hp=document.getElementById('hpNum')
-        
+                
         this.gameArea=this.coordSys.area;
         this.xP=0;
         this.yP=20;
-        this.speed=5 
+        this.speed=9; 
 
         this.id='player1'
         this.team = 'player';
         this.alive = true;
-        this.Hp=100;        
+        this.hp=100;
+        
+        
     }
 
     bounds(){
@@ -120,7 +118,7 @@ class playerBullet{
                   team: 'player',
                   ownerId: player.id,
                   damage: 1,
-                  active: true,
+                  alive: true,
                   x: startX,
                   y: startY,
                   vx: 0,
@@ -135,13 +133,13 @@ class playerBullet{
             for(let i=this.bullets.length-1;i>=0;i--)
                 {
                     const b=this.bullets[i];
-                    if(!b.active)continue;
+                    if(!b.alive)continue;
                     b.y+=b.vy*dt;
                     b.x+=b.vx*dt;
                     this.coordSys.toStage(b.x,b.y,b.element,'center-bottom');
                     if(b.y>this.bulletContainer.clientHeight+50)
                         {
-                            b.active=false;
+                            b.alive=false;
                             b.element.remove();
                             this.bullets.splice(i,1);
                         }
