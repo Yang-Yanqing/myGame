@@ -190,13 +190,17 @@ body::after{
   transform:translateX(-50%);  
 }
 
-.boss { position: absolute; }
+.boss { position: absolute;
+background-position: 12.5px center;
+}
 
 .bossHp {
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   bottom: 100%;            
-  transform: translateX(-50%) translateY(-6px); 
+  transform:translateY(-6px); 
   width: 88px;             
   height: 9px;
   background: rgba(255,255,255,.18);
@@ -223,7 +227,7 @@ body::after{
   image-rendering:pixelated; background-size:contain; background-repeat:no-repeat; background-position:center;
 }
 .spritePlayer{ background-image:url("assets/player_ship.png") }
-.spriteEnemy { background-image:url("assets/enemy_small.png") }
+.spriteEnemy { background-image:url("assets/enemy_medium.png") }
 .spriteBoss  { background-image:url("assets/boss.png") }
 /* Mobile */
 @media (max-width:980px){
