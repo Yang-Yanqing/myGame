@@ -154,17 +154,18 @@ body::after{
 
 #mainShip{
   position:absolute;
+  z-index: 2;
   width: 100px;
   height: 100px;
   background-image: url('assets/player_ship.png');
   image-rendering: pixelated;
   background-repeat: no-repeat;
   background-position: center;
+  overflow: visible;
   
   left: 50%;
   bottom: 20px;
-  transform: translateX(-50%,0);
-  position: relative;
+  
 }
 
 .shipSprite{
@@ -175,14 +176,17 @@ body::after{
 
 
 .weapon {
+  /* outline: 2px dashed #27c46a; */
+  display:none;
   position:absolute;
-  width:120px;                 
+  z-index: 3;
+  width: 60px;                 
   height:36px;
-  background:url('assets/red_weapon.png') center/contain no-repeat;
+  background:url('assets/red_weapon.png') center/100% 100% no-repeat;;
   image-rendering:pixelated;
   pointer-events:none;
   left:50%;                    
-  bottom:42px;                 
+  bottom:20px;                 
   transform:translateX(-50%);  
 }
 

@@ -19,26 +19,40 @@ class Start{
        
 
         this.startBtn.addEventListener('click',()=>{
-            gameClock.restart();
-            enemySpawner.initialized=false;
-            enemySpawner.lastWaveAt=0;
-            lastBossAt=0;
+                        
+                         enemySpawner.initialized = false;
+                         enemySpawner.lastWaveAt = 0;
+                         lastBossAt = 0;
 
-            const difficulty=this.difficulty.value;
-            console.log('Diffculty level:',difficulty);
+                        const difficulty = this.difficulty.value;
+                        let scale;
+                        if (difficulty === 'easy'){ scale = 0.2}
+                        else if (difficulty === 'normal'){ scale = 0.8 }
+                        else if (difficulty === 'hard'){ scale = 1.5 }
+                        gameClock.pause();          // 停干净
+                        gameClock.setScale(scale);  // 改倍率
+                        
 
-            if(difficulty==='easy'){gameClock=new TimeAxis(0.3);}
-            else if(difficulty==='normal'){gameClock=new TimeAxis(1);}
-            else if(difficulty==='hard'){gameClock=new TimeAxis(2);}
+                        gameClock.restart();
 
-            this.startScreen.style.display='none';
-            this.gameScreen.style.display='block';
-            setTimeout(()=>playerShip.render(),50);
+                        this.startScreen.style.display='none';
+                        this.gameScreen.style.display='block';
+                        setTimeout(() => playerShip.render(), 50);
 
-            playerShip.alive=true;
-            playerShip.hp = 100;
-            refreshHp();
-        })
+                        playerShip.alive=true;
+                        playerShip.hp=100;
+                        refreshHp();
+
+                        score=0;
+                        nextWeaponAt= weaponScoreTrigger; 
+                        updateScore();
+
+  
+                         weaponActive=false;
+                         weaponExpireAt=0;
+                         setWeaponVisible(false);
+                        //  weaponMilestones.clear();
+                        })
 
     }
 
@@ -157,6 +171,8 @@ function resolveBulletEnemyHits() {
     if (deadEnemyIds.has(e.id) && e.alive) {
       e.alive = false;
       e.element.remove();
+      score += 5;
+      updateScore();
     }
   }
   for (let i = enemys.length - 1; i >= 0; i--) {

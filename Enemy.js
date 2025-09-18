@@ -423,7 +423,7 @@ class Boss{
           
           if(this.yB<-this.h)
             {
-              this.destroy();
+              this.destroy('despawn');
               return;
             }
 
@@ -443,14 +443,18 @@ class Boss{
         {
           if(!this.alive)return;
           this.hp=Math.max(0,this.hp-(dmg||0));
+          this.updateHpBar();
           
-          if( this.hp <= 0)this.destroy();
+          if( this.hp <= 0)this.destroy('killed');
 
         }
 
-        destroy(){
+        destroy(cause='other'){
+          if(!this.alive)return
           this.alive=false;
+          if(cause === 'killed'){score+=15;updateScore()}         
           if(this.element)this.element.remove();
+
           const j=bosses.indexOf(this);
           if(j>=0)bosses.splice(j,1);
         }         

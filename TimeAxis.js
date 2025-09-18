@@ -44,7 +44,9 @@ class TimeAxis{
             resolveBulletBossHits();//Boss受击
             
             enemySpawner.update(deltaGametime, this.nowGame);
-            resolveBulletEnemyHits();//小怪受击      
+            resolveBulletEnemyHits();//小怪受击 
+            
+            updateWeaponState(this.nowGame);//weapon道具
         }
     }
         

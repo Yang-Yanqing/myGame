@@ -2,7 +2,7 @@
 // const coordSys=new CoordSys(gameArea);
 // const gameArea=document.getElementById('gameArea');
 // const gameClock=new TimeAxis(1);
-gameClock.start();
+// gameClock.start();
 class PanelPlayer{
     constructor(coordSys){
         this.coordSys=coordSys;
@@ -105,6 +105,30 @@ class playerBullet{
             return bullet;
         }
 
+        dualFire(player,muzzleDistance = 20,vy=600){
+            const baseY = player.element.clientHeight;
+            this.spawnBullet(player.xP-muzzleDistance,baseY,vy,player);
+            this.spawnBullet(player.xP+muzzleDistance,baseY,vy,player);
+        }
+
+        spawnBullet(x,y,vy,player){
+            const element=this.createBulletElement();
+            element.style.backgroundImage="url('assets/player_bullet.png')";
+            const b = {
+                id:`pb-${BULLET_ID++}`,
+                team:`player`,
+                ownerId:player.id,
+                damage:1,
+                alive:true,
+                x,y,
+                vx:0,
+                vy:vy,
+                element,    
+            };
+            this.bullets.push(b);
+            this.coordSys.toStage(b.x, b.y, b.element, 'center-bottom')
+        }
+
         
 
         biuBiu(player,vy=600){
@@ -153,7 +177,10 @@ const bulletOfPlayer=new playerBullet(coordSys);
     document.addEventListener('keydown',(event)=>{
     if(event.code==='Space')
         {
-            bulletOfPlayer.biuBiu(playerShip)
+            if(weaponActive===true){
+            bulletOfPlayer.biuBiu(playerShip);
+            bulletOfPlayer.dualFire(playerShip);}
+            else{bulletOfPlayer.biuBiu(playerShip);}
         };
     
 })

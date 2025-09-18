@@ -1,6 +1,14 @@
 const gameArea=document.getElementById('gameArea');
 const coordSys=new CoordSys(gameArea);
 let gameClock=new TimeAxis(1);
+let score=0
+const weaponScoreTrigger = 50;
+let nextWeaponAt = weaponScoreTrigger;
+let weaponTrigger = false;
+let weaponActive=false;
+let weaponExpireAt=0
+setWeaponVisible(false);
+const weaponMilestones=new Set(); 
 
 
 function endGame()
@@ -43,3 +51,40 @@ function endGame()
     const persenTage=Math.max(0,Math.min(100,(playerShip.hp/100)*100))
     hpFillEl.style.width=persenTage+'%'
   }
+
+
+  function updateScore(){
+    const scoreElement = document.getElementById('score');
+    if (scoreElement) scoreElement.textContent = String(score).padStart(6,'0');
+
+    while( score >= nextWeaponAt)
+      {
+        showWeaponForGameTime(3);
+        nextWeaponAt+=weaponScoreTrigger;
+      }
+  }
+
+
+  function setWeaponVisible(show=false){
+    const elementWeapon=document.getElementById('weapon');
+    if(elementWeapon){
+      if(show){elementWeapon.style.display='block'}
+      else{elementWeapon.style.display='none'}
+    }
+  }
+
+  function showWeaponForGameTime(duration=3){
+    weaponExpireAt = gameClock.nowGame+duration;
+    weaponActive = true;
+    setWeaponVisible(true);
+  }
+
+    function updateWeaponState(nowGame){
+      if (weaponActive && nowGame >= weaponExpireAt){
+        weaponActive=false;
+        setWeaponVisible(false);
+      }
+    }
+
+
+  
