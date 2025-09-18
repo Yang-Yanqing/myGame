@@ -181,8 +181,8 @@ body::after{
   position:absolute;
   z-index: 3;
   width: 60px;                 
-  height:36px;
-  background:url('assets/red_weapon.png') center/100% 100% no-repeat;;
+  height:50px;
+  background:url('assets/yellow_weapon.png') center/100% 100% no-repeat;;
   image-rendering:pixelated;
   pointer-events:none;
   left:50%;                    

@@ -1,7 +1,7 @@
 # Raiden: DC Blitz  
 
 <p align="left">
-  <img src="My-logo.png" alt="Game Logo" width="150">
+  <img src="/assets/My-logo.png" alt="Game Logo" width="150">
 </p>
 
 A vertical scrolling shooting game built with **HTML / CSS / JavaScript**.  

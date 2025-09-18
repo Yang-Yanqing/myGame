@@ -26,7 +26,7 @@ class Start{
 
                         const difficulty = this.difficulty.value;
                         let scale;
-                        if (difficulty === 'easy'){ scale = 0.2}
+                        if (difficulty === 'easy'){ scale = 0.5}
                         else if (difficulty === 'normal'){ scale = 0.8 }
                         else if (difficulty === 'hard'){ scale = 1.5 }
                         gameClock.pause();          // 停干净
@@ -144,9 +144,7 @@ function resolveBulletPlayerHits() {
     playerShip.alive=false;
     endGame()
   }
-
-
-  
+ 
 }
 
 function resolveBulletEnemyHits() {
